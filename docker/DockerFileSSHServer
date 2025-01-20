@@ -1,0 +1,11 @@
+# docker run -d -p 2224:22 ssh-host
+# docker build . -t ssh-host
+# docker run -d --name server_4 -p 2224:22 ubuntu_ssh_server bash
+# ssh-keygen -b 4096 -t rsa -f dockerkey
+
+FROM ubuntu:latest
+RUN apt-get update && apt-get install -y openssh-server
+RUN echo "root:password" | chpasswd
+RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+COPY ./dockerkey.pub /root/.ssh/authorized_keys
+CMD ["/usr/sbin/sshd"]

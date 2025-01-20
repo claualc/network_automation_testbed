@@ -1,0 +1,3 @@
+---
+basic_role_config_var: /config_dir
+basic_role_sentence: "Hello world to {{ members }}"

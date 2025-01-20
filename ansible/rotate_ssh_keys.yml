@@ -1,0 +1,14 @@
+---
+- name: Rotate ssh keys
+  hosts: all
+  tasks:
+    - name: Check if authorize keys exits
+      stat:
+        path: /root/.ssh/authorized_keys
+      register: file_exists
+
+    - name: Perform action if file does not exist
+      debug:
+        msg: "{{ file_exists }}"
+      when: file_exists.stat.exists == True
+  

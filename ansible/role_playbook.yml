@@ -1,0 +1,5 @@
+--- 
+- name: Say Hi
+  hosts: all
+  roles:
+    - basic_role

@@ -1,0 +1,56 @@
+---
+- name: Test Playbook
+  hosts: all
+  remote_user: root
+  # TO USE WITH VAULT
+  # vars_files:
+  #   - secrets
+  tasks:
+    # - name: Install python
+    #   ansible.builtin.apt:
+    #     name: python3
+    #     state: present
+    # - name: Check python version
+    #   ansible.builtin.shell:
+    #     cmd: python3 --version
+    #   register: python
+    # - name: Check version
+    #   ansible.builtin.debug:
+    #     var: python.stdout
+    # - name: Ensure SSH server is running
+    #   ansible.builtin.service:
+    #     name: ssh
+    #     state: started
+    - name: Check group
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is part of {{ group_names }} groups \n running on port {{ localhost_port }}"
+      tags: [debug]
+    - name: Check members
+      ansible.builtin.debug:
+        msg: "{{ item }} is a member"
+      loop: "{{ members }}"
+
+
+- name: Render templates
+  hosts: even
+  user: root
+  tasks:
+  - name: Create template directory
+    ansible.builtin.file:
+      state: directory
+      path: /templates
+  - name: Render Jinja templates
+    ansible.builtin.template:
+      src: "./templates/even.j2"
+      dest: "/templates/{{ inventory_hostname }}.conf"
+      owner: root
+      group: root
+  - name: Print file content
+    ansible.builtin.shell:
+      cmd: cat "/templates/{{ inventory_hostname }}.conf"
+    register: file_content
+    tags: [debug]
+  - name: Debug file content
+    ansible.builtin.debug:
+      var: file_content.stdout
+    tags: [debug]
